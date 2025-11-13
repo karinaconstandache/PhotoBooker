@@ -216,3 +216,10 @@ orleans.codegen.cs
 ###################
 **/obj/Docker/
 **/.dockerignore
+
+###################
+# Frontend libraries (Bootstrap, jQuery, etc.)
+###################
+wwwroot/lib/
+wwwroot/node_modules/
+wwwroot/dist/
