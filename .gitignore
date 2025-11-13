@@ -220,6 +220,6 @@ orleans.codegen.cs
 ###################
 # Frontend libraries (Bootstrap, jQuery, etc.)
 ###################
-wwwroot/lib/
-wwwroot/node_modules/
-wwwroot/dist/
+**/wwwroot/lib/
+**/wwwroot/node_modules/
+**/wwwroot/dist/
