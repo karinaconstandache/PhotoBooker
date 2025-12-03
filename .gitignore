@@ -1,4 +1,4 @@
-## .gitignore for ASP.NET Core and Blazor projects
+## .gitignore for ASP.NET Core projects
 
 ###################
 # Build Results
@@ -36,15 +36,6 @@ ScaffoldingReadMe.txt
 **/App_Data/*.ldf
 **/App_Data/*.sdf
 *.publishsettings
-
-###################
-# Blazor
-###################
-.blazor/
-**/.blazor/**
-**/wwwroot/service-worker-assets.js
-**/wwwroot/_framework/**
-.compilerconfig.json
 
 ###################
 # User-specific files

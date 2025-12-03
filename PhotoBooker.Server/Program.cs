@@ -9,9 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // MVC
 builder.Services.AddControllersWithViews();
 
-// Blazor Server
-builder.Services.AddServerSideBlazor();
-
 // EF Core & Identity
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -59,11 +56,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-// Blazor hub (required for server-side Blazor)
-app.MapBlazorHub();
-
-// Add low-priority fallback so Blazor pages can be served via MVC `_Host`
-app.MapFallbackToController("Blazor", "Home");
 
 app.Run();
