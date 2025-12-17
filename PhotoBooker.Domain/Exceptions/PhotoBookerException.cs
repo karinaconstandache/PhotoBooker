@@ -1,6 +1,5 @@
 namespace PhotoBooker.Domain.Exceptions;
 
-// Base exception class for PhotoBooker application (inheritance example)
 public class PhotoBookerException : Exception
 {
     public PhotoBookerException() : base()

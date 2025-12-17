@@ -34,7 +34,6 @@ const Register: React.FC<RegisterProps> = ({ onSuccess, onSwitchToLogin }) => {
     setError('');
     setLoading(true);
 
-    // Validation
     if (formData.username.length < 3) {
       setError('Username must be at least 3 characters');
       setLoading(false);
@@ -59,7 +58,7 @@ const Register: React.FC<RegisterProps> = ({ onSuccess, onSwitchToLogin }) => {
 
   return (
     <div className="auth-form">
-      <h2>Register for PhotoBooker</h2>
+      <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Username</label>

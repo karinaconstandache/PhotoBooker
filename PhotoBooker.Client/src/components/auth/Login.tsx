@@ -41,7 +41,7 @@ const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToRegister }) => {
 
   return (
     <div className="auth-form">
-      <h2>Login to PhotoBooker</h2>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="username">Username</label>

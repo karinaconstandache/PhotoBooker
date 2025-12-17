@@ -17,7 +17,7 @@ const PhotographerHomePage: React.FC = () => {
   const [formData, setFormData] = useState<CreatePortfolioDto>({
     title: '',
     description: '',
-    category: 0, // Default to Portraits
+    category: 0, 
   });
 
   useEffect(() => {

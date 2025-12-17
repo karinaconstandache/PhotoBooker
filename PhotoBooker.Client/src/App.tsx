@@ -27,7 +27,7 @@ const App: React.FC = () => {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={
-              userRole === 1 // Photographer
+              userRole === 1 
                 ? <Navigate to="/photographer" replace /> 
                 : <Navigate to="/client" replace />
             } />

@@ -12,7 +12,7 @@ using PhotoBooker.API.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add CORS
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClient", policy =>
@@ -23,19 +23,19 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add API Controllers
+// API Controllers
 builder.Services.AddControllers();
 
 // EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register Repositories
+// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPhotographerRepository, PhotographerRepository>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
-// Register Application Services
+// Application Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPhotographerService, PhotographerService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
@@ -82,7 +82,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "API for PhotoBooker - Photography Booking Platform"
     });
 
-    // Configure JWT Bearer authentication in Swagger
+    // JWT Bearer authentication in Swagger
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -108,7 +108,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 
-    // Add file upload operation filter
+    // File upload operation filter
     options.OperationFilter<FileUploadOperationFilter>();
 });
 
@@ -127,7 +127,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Enable static files for serving uploaded images
 app.UseStaticFiles();
 
 app.UseCors("AllowClient");
