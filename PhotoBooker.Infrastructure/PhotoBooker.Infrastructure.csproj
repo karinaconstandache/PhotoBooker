@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PhotoBooker.Domain\PhotoBooker.Domain.csproj" />
+    <ProjectReference Include="..\PhotoBooker.Application\PhotoBooker.Application.csproj" />
   </ItemGroup>
 
 </Project>
