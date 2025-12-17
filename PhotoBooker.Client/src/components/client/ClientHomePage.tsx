@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import photographerService from '../../services/photographerService';
 import type { PhotographerDto } from '../../types/photographer';
 import './ClientHomePage.css';
 
 const ClientHomePage: React.FC = () => {
+  const navigate = useNavigate();
   const [photographers, setPhotographers] = useState<PhotographerDto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -77,7 +79,12 @@ const ClientHomePage: React.FC = () => {
                 </p>
               </div>
               <div className="photographer-actions">
-                <button className="btn-view-profile">View Profile</button>
+                <button 
+                  className="btn-view-profile"
+                  onClick={() => navigate(`/photographer/${photographer.id}`)}
+                >
+                  View Profile
+                </button>
                 <button className="btn-book">Book Now</button>
               </div>
             </div>

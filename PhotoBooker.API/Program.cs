@@ -7,6 +7,7 @@ using PhotoBooker.Application.Services;
 using Microsoft.OpenApi.Models;
 using PhotoBooker.Infrastructure.Data;
 using PhotoBooker.Infrastructure.Repositories;
+using PhotoBooker.API.Filters;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -106,6 +107,9 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
+
+    // Add file upload operation filter
+    options.OperationFilter<FileUploadOperationFilter>();
 });
 
 var app = builder.Build();
@@ -122,6 +126,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable static files for serving uploaded images
+app.UseStaticFiles();
+
 app.UseCors("AllowClient");
 app.UseAuthentication();
 app.UseAuthorization();

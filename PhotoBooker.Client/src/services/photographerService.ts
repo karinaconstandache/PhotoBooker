@@ -55,6 +55,20 @@ class PhotographerService {
 
     return response.json();
   }
+
+  async getPhotographerPortfolios(photographerId: number): Promise<any[]> {
+    const response = await fetch(`${API_BASE_URL}/portfolios/photographer/${photographerId}`, {
+      method: 'GET',
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to fetch photographer portfolios');
+    }
+
+    return response.json();
+  }
 }
 
 export default new PhotographerService();

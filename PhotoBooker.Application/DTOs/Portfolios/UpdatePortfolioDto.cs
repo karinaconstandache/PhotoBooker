@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using PhotoBooker.Domain.Enums;
 
 namespace PhotoBooker.Application.DTOs.Portfolios;
 
@@ -11,4 +12,7 @@ public class UpdatePortfolioDto
     [Required]
     [MaxLength(500)]
     public string Description { get; set; } = string.Empty;
+
+    [Required]
+    public PortfolioCategory Category { get; set; }
 }
