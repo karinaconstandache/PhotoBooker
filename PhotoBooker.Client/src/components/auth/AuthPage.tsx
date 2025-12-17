@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Register from './Register';
+import { ClientHomePage } from '../client';
+import { PhotographerHomePage } from '../photographer';
 import authService from '../../services/authService';
 import './AuthPage.css';
 
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    authService.isAuthenticated()
+  );
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
-    const user = authService.getCurrentUser();
-    console.log('User authenticated:', user);
-    // You can redirect to another page or show a dashboard here
   };
 
   const handleLogout = () => {
@@ -22,6 +23,50 @@ const AuthPage: React.FC = () => {
 
   if (isAuthenticated) {
     const user = authService.getCurrentUser();
+    
+    // Role-based routing
+    // UserRole.Photographer = 1, UserRole.Client = 2
+    if (user?.role === 1) {
+      return (
+        <div>
+          <nav className="app-navbar">
+            <div className="navbar-content">
+              <h2>PhotoBooker - Photographer</h2>
+              <div className="navbar-user">
+                <span>
+                  {user.firstName} {user.lastName}
+                </span>
+                <button onClick={handleLogout} className="btn-logout">
+                  Logout
+                </button>
+              </div>
+            </div>
+          </nav>
+          <PhotographerHomePage />
+        </div>
+      );
+    } else if (user?.role === 2) {
+      return (
+        <div>
+          <nav className="app-navbar">
+            <div className="navbar-content">
+              <h2>PhotoBooker - Client</h2>
+              <div className="navbar-user">
+                <span>
+                  {user.firstName} {user.lastName}
+                </span>
+                <button onClick={handleLogout} className="btn-logout">
+                  Logout
+                </button>
+              </div>
+            </div>
+          </nav>
+          <ClientHomePage />
+        </div>
+      );
+    }
+
+    // Fallback for unspecified role
     return (
       <div className="auth-container">
         <div className="auth-card">
@@ -33,8 +78,8 @@ const AuthPage: React.FC = () => {
             <p>
               <strong>Username:</strong> {user?.username}
             </p>
-            <p>
-              <strong>Role:</strong> {user?.role === 1 ? 'Photographer' : 'Client'}
+            <p className="error-message">
+              Your account role is not properly configured. Please contact support.
             </p>
           </div>
           <button onClick={handleLogout} className="btn-primary">

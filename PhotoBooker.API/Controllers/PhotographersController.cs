@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PhotoBooker.Application.DTOs.Photographers;
+using PhotoBooker.Application.Interfaces;
 
 namespace PhotoBooker.API.Controllers;
 
@@ -8,71 +10,88 @@ namespace PhotoBooker.API.Controllers;
 [Authorize]
 public class PhotographersController : ControllerBase
 {
+    private readonly IPhotographerService _photographerService;
     private readonly ILogger<PhotographersController> _logger;
 
-    public PhotographersController(ILogger<PhotographersController> logger)
+    public PhotographersController(
+        IPhotographerService photographerService,
+        ILogger<PhotographersController> logger)
     {
+        _photographerService = photographerService;
         _logger = logger;
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public ActionResult<IEnumerable<object>> GetPhotographers()
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(IEnumerable<PhotographerDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<PhotographerDto>>> GetPhotographers()
     {
-        _logger.LogInformation("Fetching all photographers");
-        // Implementation here
-        return Ok(new[] { new { id = 1, name = "Example Photographer" } });
+        try
+        {
+            _logger.LogInformation("Fetching all photographers");
+            var photographers = await _photographerService.GetAllPhotographersAsync();
+            return Ok(photographers);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching photographers");
+            return StatusCode(500, new { message = "An error occurred while fetching photographers" });
+        }
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(PhotographerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<object> GetPhotographer(int id)
+    public async Task<ActionResult<PhotographerDto>> GetPhotographer(int id)
     {
-        _logger.LogInformation("Fetching photographer {PhotographerId}", id);
-        return Ok(new { id, name = "Example Photographer" });
+        try
+        {
+            _logger.LogInformation("Fetching photographer {PhotographerId}", id);
+            var photographer = await _photographerService.GetPhotographerByIdAsync(id);
+            
+            if (photographer == null)
+                return NotFound(new { message = "Photographer not found" });
+
+            return Ok(photographer);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching photographer {PhotographerId}", id);
+            return StatusCode(500, new { message = "An error occurred while fetching photographer" });
+        }
     }
 
-    [HttpPost]
+    [HttpPut("profile")]
     [Authorize(Roles = "Photographer")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public ActionResult<object> CreatePhotographer([FromBody] object photographerDto)
-    {
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        _logger.LogInformation("User {UserId} creating photographer profile", userId);
-        // Implementation here
-        return CreatedAtAction(nameof(GetPhotographer), new { id = 1 }, new { id = 1, name = "New Photographer" });
-    }
-
-    [HttpPut("{id}")]
-    [Authorize(Roles = "Photographer")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<object> UpdatePhotographer(int id, [FromBody] object photographerDto)
-    {
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        _logger.LogInformation("User {UserId} updating photographer {PhotographerId}", userId, id);
-        // Implementation here
-        return Ok(new { id, name = "Updated Photographer" });
-    }
-
-    [HttpDelete("{id}")]
-    [Authorize(Roles = "Photographer")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(PhotographerDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult DeletePhotographer(int id)
+    public async Task<ActionResult<PhotographerDto>> UpdatePhotographerProfile([FromBody] UpdatePhotographerDto updateDto)
     {
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        _logger.LogInformation("User {UserId} deleting photographer {PhotographerId}", userId, id);
-        // Implementation here
-        return NoContent();
+        try
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized(new { message = "Invalid user ID" });
+            }
+
+            _logger.LogInformation("User {UserId} updating photographer profile", userId);
+            
+            var photographer = await _photographerService.UpdatePhotographerAsync(userId, updateDto);
+            
+            if (photographer == null)
+                return NotFound(new { message = "Photographer profile not found" });
+
+            return Ok(photographer);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating photographer profile");
+            return StatusCode(500, new { message = "An error occurred while updating photographer profile" });
+        }
     }
 }

@@ -31,9 +31,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPhotographerRepository, PhotographerRepository>();
+builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
 // Register Application Services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPhotographerService, PhotographerService>();
+builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
